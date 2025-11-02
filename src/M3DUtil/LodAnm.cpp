@@ -1,6 +1,7 @@
 #include <M3DUtil/LodAnm.hpp>
+#include <M3DUtil/MActor.hpp>
+#include <M3DUtil/MActorData.hpp>
 
-//bad: slwi r0, r0, 2      good: //slwi r0, r0, 4     me: 
 TLodAnm::TLodAnm(TLiveActor* param_1, const TLodAnmIndex* param_2, int param_3, float param_4) {
     mActor = param_1;
     mIndex = param_2;
@@ -20,16 +21,43 @@ TLodAnm::TLodAnm(TLiveActor* param_1, const TLodAnmIndex* param_2, int param_3, 
     }
 } 
 
-void TLodAnm::setBckAnm_(int) { }
+int TLodAnm::setBckAnm_(int param_1) {
+    if (param_1 < 0) {
+        (*(MActor**)((char*)mActor + 0x74))->setBckFromIndex(-1);
+        return 1;
+    }
+
+    int changed = 0;
+    int currentAnmIdx = (*(MActor**)((char*)mActor + 0x74))->getCurAnmIdx(0);
+    int anmIdx;
+
+    if (mIndex == 0) {
+        anmIdx = param_1;
+    } else {
+        anmIdx = *(int*)((char*)mIndex + (param_1 << 4) + (mParam3 << 2));
+    }
+
+    int* remapPtr = mField18;
+    if (remapPtr != nullptr) {
+        while (*remapPtr >= 0) {
+            if (anmIdx == *remapPtr) {
+                anmIdx = remapPtr[1];
+                break;
+            }
+            remapPtr += 2;
+        }
+    }
+
+    if (currentAnmIdx != anmIdx) {
+        (*(MActor**)((char*)mActor + 0x74))->setBckFromIndex(anmIdx);
+        changed = 1;
+    }
+
+    return changed;
+}
 
 void TLodAnm::setBtpAnm_(int param_1) { }
 void TLodAnm::setBckAndBtpAnm(int param_1) 
 { 
-    //TODO
-
-    setBckAnm_(param_1);
-    if (mIndex != 0)
-    {
-        setBtpAnm_(param_1);
-    }
+    
 }
