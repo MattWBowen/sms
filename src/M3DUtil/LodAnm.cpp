@@ -30,7 +30,6 @@ int TLodAnm::setBckAnm_(int param_1) {
     int changed = 0;
     int currentAnmIdx = (*(MActor**)((char*)mActor + 0x74))->getCurAnmIdx(0);
     int anmIdx;
-
     if (mIndex == 0) {
         anmIdx = param_1;
     } else {
@@ -64,10 +63,13 @@ int TLodAnm::setBtpAnm_(int param_1) {
 
     int changed = 0;
     int currentAnmIdx = (*(MActor**)((char*)mActor + 0x74))->getCurAnmIdx(3);
-    int anmIdx = *(int*)((char*)mIndex + (param_1 << 4) + (mParam3 << 2) + 8);
-    int* remapPtr = mField1C;
+    char* basePtr = (char*)mIndex;
+    basePtr += (param_1 << 4);
+    basePtr += (mParam3 << 2);
+    int anmIdx = *(int*)(basePtr + 8);
 
-    if (remapPtr != nullptr) {
+    if (mField1C != nullptr) {
+        int* remapPtr = mField1C;
         while (*remapPtr >= 0) {
             if (anmIdx == *remapPtr) {
                 anmIdx = remapPtr[1];
