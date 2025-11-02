@@ -12,7 +12,7 @@ TLodAnm::TLodAnm(TLiveActor* param_1, const TLodAnmIndex* param_2, int param_3, 
     mField14 = -1;
     mField18 = 0;
     mField1C = 0;
-    
+
     if (param_2 != 0) {
 
         while (param_2[mField10].index >= -1) {
@@ -56,8 +56,39 @@ int TLodAnm::setBckAnm_(int param_1) {
     return changed;
 }
 
-void TLodAnm::setBtpAnm_(int param_1) { }
-void TLodAnm::setBckAndBtpAnm(int param_1) 
-{ 
-    
+int TLodAnm::setBtpAnm_(int param_1) {
+    if (param_1 < 0) {
+        (*(MActor**)((char*)mActor + 0x74))->setBtpFromIndex(-1);
+        return 1;
+    }
+
+    int changed = 0;
+    int currentAnmIdx = (*(MActor**)((char*)mActor + 0x74))->getCurAnmIdx(3);
+    int anmIdx = *(int*)((char*)mIndex + (param_1 << 4) + (mParam3 << 2) + 8);
+    int* remapPtr = mField1C;
+
+    if (remapPtr != nullptr) {
+        while (*remapPtr >= 0) {
+            if (anmIdx == *remapPtr) {
+                anmIdx = remapPtr[1];
+                break;
+            }
+            remapPtr += 2;
+        }
+    }
+
+    if (currentAnmIdx != anmIdx) {
+        (*(MActor**)((char*)mActor + 0x74))->setBtpFromIndex(anmIdx);
+        changed = 1;
+    }
+
+    return changed;
+}
+int TLodAnm::setBckAndBtpAnm(int param_1) {
+    int result = setBckAnm_(param_1);
+    if (mIndex != 0) {
+        setBtpAnm_(param_1);
+    }
+    mField14 = param_1;
+    return result;
 }

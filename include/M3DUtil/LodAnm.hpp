@@ -2,22 +2,22 @@
 #define M3DUTIL_LOD_ANM_HPP
 
 class TLiveActor;
-struct TLodAnmIndex { 
-	int index; //probably wrong?
-
-	int data[3]; //TBD, this is just to make the struct the right size
+struct TLodAnmIndex {
+	int index;
+	int data[3];
 }; 
 
 
 class TLodAnm {
 public:
     TLodAnm(TLiveActor* param_1, const TLodAnmIndex* param_2, int param_3, float param_4);
-    
+
     void execChangeLod();
-    void setBckAndBtpAnm(int);
-    void setBtpAnm_(int);
+    int setBckAndBtpAnm(int);
+   
     
     //was void, int for testing
+    int setBtpAnm_(int);
     int setBckAnm_(int);
 
     /* 0x0 */ TLiveActor* mActor;     
@@ -28,6 +28,6 @@ public:
     /* 0x10 */int mField10;
     /* 0x14 */int mField14;
     /* 0x18 */int* mField18;
-    /* 0x1c */int mField1C;             
+    /* 0x1c */int* mField1C;             
 };
 #endif
