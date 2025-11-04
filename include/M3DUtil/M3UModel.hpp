@@ -3,21 +3,29 @@
 
 #include <JSystem/JDrama/JDRGraphics.hpp>
 
-struct M3UMtxCalcSetInfo;
+struct M3UMtxCalcSetInfo {
+	/* 0x0 */ u8 unk0;
+	/* 0x1 */ u8 unk1;
+	/* 0x2 */ u8 type;  
+	/* 0x3 */ u8 index; 
+};
+
 class J3DModel;
 class J3DFrameCtrl;
 class J3DAnmTexPattern;
 class J3DTexNoAnm;
+class J3DMtxCalc;
 
 class M3UModelCommon {
 public:
-	virtual void getMtxCalc(const M3UMtxCalcSetInfo&);
+	virtual J3DMtxCalc* getMtxCalc(const M3UMtxCalcSetInfo&);
 
 public:
 	/* 0x4 */ void* unk4; // TODO: what is this?
 	/* 0x8 */ J3DAnmTexPattern** unk8;
 	/* 0xC */ J3DTexNoAnm** unkC;
-	/* 0x10 */ char unk10[0x8];
+	/* 0x10 */ void* unk10;
+	/* 0x14 */ void* unk14; 
 };
 
 class M3UModel {

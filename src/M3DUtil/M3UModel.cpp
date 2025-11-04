@@ -3,9 +3,35 @@
 #include <JSystem/J3D/J3DGraphAnimator/J3DJoint.hpp>
 #include <JSystem/J3D/J3DGraphAnimator/J3DAnimation.hpp>
 
-void M3UModelCommon::getMtxCalc(const M3UMtxCalcSetInfo&) { }
+//98.26%
+J3DMtxCalc* M3UModelCommon::getMtxCalc(const M3UMtxCalcSetInfo& info) {
+	J3DMtxCalc** ptr;
 
-void M3UModel::changeMtxCalcAnmTransform(int param_1, u8 param_2) { }
+	switch (info.type) {
+		case 0:
+			ptr = (J3DMtxCalc**)((int)unk10 + (u8)info.index * 0x70);
+			if (ptr == 0) break;
+			return *ptr;
+		case 1:
+			ptr = (J3DMtxCalc**)((int)unk14 + (u8)info.index * 0x70);
+			if (ptr == 0) break;
+			return *ptr;
+		default:
+			return 0;
+	}
+}
+
+//87.41%
+void M3UModel::changeMtxCalcAnmTransform(int param_1, u8 param_2) {
+	u8* ptr = &unk1C[param_1 * 2];
+	*ptr = param_2;
+
+	int value = *(s16*)((u32)unk4->unk8[param_2] + 2);
+
+	J3DFrameCtrl* ctrl = &unkC[ptr[1]];
+	*(s16*)((u32)ctrl + 8) = value;
+	*(f32*)((u32)ctrl + 0x10) = 0.0f;
+}
 
 void M3UModel::changeAnmTexPattern(int param_1, u8 param_2)
 {
