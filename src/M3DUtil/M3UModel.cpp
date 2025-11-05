@@ -69,6 +69,12 @@ void M3UModel::updateOut()
 
 void M3UModel::entryIn() { }
 
-void M3UModel::entryOut() { }
+void M3UModel::entryOut()
+{
+	if (unk1C != 0 && unk1C[0] != 0xFF) { 
+		J3DAnmTexPattern* anim = unk4->unk8[unk1C[0]];
+		jModel->mModelData->removeTexNoAnimator(anim);
+	}
+}
 
 void M3UModel::perform(u32, JDrama::TGraphics*) { }
