@@ -57,7 +57,15 @@ void M3UModel::updateIn()
 	updateInTexPatternAnm();
 }
 
-void M3UModel::updateOut() { }
+void M3UModel::updateOut()
+{
+	for (int i = 0; i < unk10; i++) {
+		u16* index = (u16*)((u32)unk14 + i * 6);
+		J3DJoint** joints = jModel->mModelData->mJointNodePointer;
+		J3DJoint* joint = joints[*index];
+		*(u32*)((u32)joint + 0x58) = 0;
+	}
+}
 
 void M3UModel::entryIn() { }
 
