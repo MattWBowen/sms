@@ -63,7 +63,7 @@ bool CLBChaseGeneralConstantSpecifySpeed(T* param_1, T param_2, T param_3)
 template <class T> void CLBEaseInInbetween(T, T, T);
 template <class T> void CLBEaseOutInbetween(T, T, T);
 template <class T> void CLBLinearInbetween(T, T, T);
-template <class T> void CLBPalFrame(T);
+template <class T> T CLBPalFrame(T);
 template <class T> void CLBPalIntSpeed(T);
 template <class T> T CLBRoundf(f32);
 template <class T> void CLBTwoDegreeGeneralInbetween(T, T, f32, f32);
