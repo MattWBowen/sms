@@ -2,6 +2,7 @@
 #include <JSystem/J3D/J3DGraphAnimator/J3DModel.hpp>
 #include <JSystem/J3D/J3DGraphAnimator/J3DJoint.hpp>
 #include <JSystem/J3D/J3DGraphAnimator/J3DAnimation.hpp>
+#include <JSystem/J3D/J3DGraphLoader/J3DModelLoader.hpp>
 
 //98.26%
 J3DMtxCalc* M3UModelCommon::getMtxCalc(const M3UMtxCalcSetInfo& info) {
@@ -43,7 +44,40 @@ void M3UModel::changeAnmTexPattern(int param_1, u8 param_2)
 	ctrl.mCurrentFrame = 0.0f;
 }
 
-void M3UModel::updateInMotion() { }
+void M3UModel::updateInMotion()
+{
+	int offset = 0;
+	for (int i = 0; i < unk10; i++) {
+		u16* entry = (u16*)((u32)unk14 + offset);
+
+		J3DFrameCtrl* frameCtrl = &unkC[*((u8*)entry + 5)];
+		J3DAnmBase* matAnm = ((J3DAnmBase**)unk4->unk4)[*((u8*)entry + 4)];
+
+		frameCtrl->update();
+
+		J3DJoint* joint = jModel->mModelData->mJointNodePointer[*entry];
+
+		if (*((u8*)entry + 3) == 0xFF) {
+			joint->setMtxCalc(nullptr);
+		} else {
+			matAnm->mFrame = frameCtrl->mCurrentFrame;
+
+			switch (*((u8*)entry + 2)) {
+				case 1:
+					*(J3DAnmBase**)((u32)unk4->unk14 + *((u8*)entry) * 0x70 + 0x58) = matAnm;
+					break;
+				case 0:
+					*(J3DAnmBase**)((u32)unk4->unk10 + *((u8*)entry) * 0x70 + 0x58) = matAnm;
+					break;
+			}
+
+			joint->setMtxCalc(unk4->getMtxCalc(*(M3UMtxCalcSetInfo*)entry));
+		}
+
+		offset += 6;
+		
+	}
+}
 
 void M3UModel::updateInTexPatternAnm()
 {
