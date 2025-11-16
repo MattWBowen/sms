@@ -6,9 +6,17 @@
 struct M3UMtxCalcSetInfo {
 	/* 0x0 */ u8 unk0;
 	/* 0x1 */ u8 unk1;
-	/* 0x2 */ u8 type;  
-	/* 0x3 */ u8 index; 
+	/* 0x2 */ u8 type;
+	/* 0x3 */ u8 index;
 };
+
+struct M3UMotionInfo {
+	/* 0x0 */ u16 jointNo;
+	/* 0x2 */ u8 mtxCalcType;
+	/* 0x3 */ u8 mtxCalcIndex;
+	/* 0x4 */ u8 anmIndex;
+	/* 0x5 */ u8 frameCtrlIndex;
+}; // Size = 0x6
 
 class J3DModel;
 class J3DFrameCtrl;
@@ -49,7 +57,7 @@ public:
 	/* 0x8 */ J3DModel* jModel;
 	/* 0xC */ J3DFrameCtrl* frameControls;
 	/* 0x10 */ u16 motionCount;
-	/* 0x14 */ void* unk14; // TODO: what is this? //todo: MotionInfo
+	/* 0x14 */ M3UMotionInfo* motionInfo;
 	/* 0x18 */ u32 unk18;
 	/* 0x1C */ u8* texPatternInfo;
 };

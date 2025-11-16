@@ -48,7 +48,7 @@ void M3UModel::updateInMotion()
 {
 	int offset = 0;
 	for (int i = 0; i < motionCount; i++) {
-		u16* entry = (u16*)((u32)unk14 + offset);
+		u16* entry = (u16*)((u32)motionInfo + offset);
 
 		J3DFrameCtrl* frameCtrl = &frameControls[*((u8*)entry + 5)];
 		J3DAnmBase* matAnm = ((J3DAnmBase**)common->anmData)[*((u8*)entry + 4)];
@@ -94,10 +94,10 @@ void M3UModel::updateIn()
 void M3UModel::updateOut()
 {
 	for (int i = 0; i < motionCount; i++) {
-		u16* index = (u16*)((u32)unk14 + i * 6);
+		M3UMotionInfo* entry = &motionInfo[i];
 		J3DJoint** joints = jModel->mModelData->mJointNodePointer;
-		J3DJoint* joint = joints[*index];
-		*(u32*)((u32)joint + 0x58) = 0;
+		J3DJoint* joint = joints[entry->jointNo];
+		joint->setMtxCalc(nullptr);
 	}
 }
 
