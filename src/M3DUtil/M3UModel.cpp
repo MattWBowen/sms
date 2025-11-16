@@ -101,7 +101,19 @@ void M3UModel::updateOut()
 	}
 }
 
-void M3UModel::entryIn() { }
+//67.74, make this better
+void M3UModel::entryIn()
+{
+	u8* ptr = unk1C;
+	if (ptr != nullptr) {
+		if (ptr[1] != 0xFF) {
+			u8 index1 = ptr[1];
+			J3DAnmTexPattern* pattern = unk4->unk8[ptr[0]];
+			pattern->mFrame = unkC[index1].mCurrentFrame;
+			jModel->mModelData->setTexNoAnimator(pattern, unk4->unkC[ptr[0]]);
+		}
+	}
+}
 
 void M3UModel::entryOut()
 {
@@ -111,4 +123,21 @@ void M3UModel::entryOut()
 	}
 }
 
-void M3UModel::perform(u32, JDrama::TGraphics*) { }
+void M3UModel::perform(u32 flags, JDrama::TGraphics* graphics)
+{
+	if (flags & 0x2) {
+		updateIn();
+		jModel->calc();
+		updateOut();
+	}
+
+	if (flags & 0x4) {
+		jModel->viewCalc();
+	}
+
+	if (flags & 0x200) {
+		entryIn();
+		jModel->entry();
+		entryOut();
+	}
+}
