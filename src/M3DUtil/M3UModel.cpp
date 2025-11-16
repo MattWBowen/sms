@@ -24,34 +24,34 @@ J3DMtxCalc* M3UModelCommon::getMtxCalc(const M3UMtxCalcSetInfo& info) {
 
 //87.41%
 void M3UModel::changeMtxCalcAnmTransform(int param_1, u8 param_2) {
-	u8* ptr = &unk1C[param_1 * 2];
+	u8* ptr = &texPatternInfo[param_1 * 2];
 	*ptr = param_2;
 
-	int value = *(s16*)((u32)unk4->unk8[param_2] + 2);
+	int value = *(s16*)((u32)common->texPattern[param_2] + 2);
 
-	J3DFrameCtrl* ctrl = &unkC[ptr[1]];
+	J3DFrameCtrl* ctrl = &frameControls[ptr[1]];
 	*(s16*)((u32)ctrl + 8) = value;
 	*(f32*)((u32)ctrl + 0x10) = 0.0f;
 }
 
 void M3UModel::changeAnmTexPattern(int param_1, u8 param_2)
 {
-	u8* ptr = &unk1C[param_1 * 2];
+	u8* ptr = &texPatternInfo[param_1 * 2];
 	ptr[0]  = param_2;
 
-	J3DFrameCtrl& ctrl = unkC[ptr[1]];
-	ctrl.mEndFrame     = unk4->unk8[param_2]->getFrameMax();
+	J3DFrameCtrl& ctrl = frameControls[ptr[1]];
+	ctrl.mEndFrame     = common->texPattern[param_2]->getFrameMax();
 	ctrl.mCurrentFrame = 0.0f;
 }
 
 void M3UModel::updateInMotion()
 {
 	int offset = 0;
-	for (int i = 0; i < unk10; i++) {
+	for (int i = 0; i < motionCount; i++) {
 		u16* entry = (u16*)((u32)unk14 + offset);
 
-		J3DFrameCtrl* frameCtrl = &unkC[*((u8*)entry + 5)];
-		J3DAnmBase* matAnm = ((J3DAnmBase**)unk4->unk4)[*((u8*)entry + 4)];
+		J3DFrameCtrl* frameCtrl = &frameControls[*((u8*)entry + 5)];
+		J3DAnmBase* matAnm = ((J3DAnmBase**)common->anmData)[*((u8*)entry + 4)];
 
 		frameCtrl->update();
 
@@ -64,14 +64,14 @@ void M3UModel::updateInMotion()
 
 			switch (*((u8*)entry + 2)) {
 				case 1:
-					*(J3DAnmBase**)((u32)unk4->unk14 + *((u8*)entry) * 0x70 + 0x58) = matAnm;
+					*(J3DAnmBase**)((u32)common->unk14 + *((u8*)entry) * 0x70 + 0x58) = matAnm;
 					break;
 				case 0:
-					*(J3DAnmBase**)((u32)unk4->unk10 + *((u8*)entry) * 0x70 + 0x58) = matAnm;
+					*(J3DAnmBase**)((u32)common->unk10 + *((u8*)entry) * 0x70 + 0x58) = matAnm;
 					break;
 			}
 
-			joint->setMtxCalc(unk4->getMtxCalc(*(M3UMtxCalcSetInfo*)entry));
+			joint->setMtxCalc(common->getMtxCalc(*(M3UMtxCalcSetInfo*)entry));
 		}
 
 		offset += 6;
@@ -81,8 +81,8 @@ void M3UModel::updateInMotion()
 
 void M3UModel::updateInTexPatternAnm()
 {
-	if (unk1C)
-		unkC[unk1C[1]].update();
+	if (texPatternInfo)
+		frameControls[texPatternInfo[1]].update();
 }
 
 void M3UModel::updateIn()
@@ -93,7 +93,7 @@ void M3UModel::updateIn()
 
 void M3UModel::updateOut()
 {
-	for (int i = 0; i < unk10; i++) {
+	for (int i = 0; i < motionCount; i++) {
 		u16* index = (u16*)((u32)unk14 + i * 6);
 		J3DJoint** joints = jModel->mModelData->mJointNodePointer;
 		J3DJoint* joint = joints[*index];
@@ -104,21 +104,21 @@ void M3UModel::updateOut()
 //67.74, make this better
 void M3UModel::entryIn()
 {
-	u8* ptr = unk1C;
+	u8* ptr = texPatternInfo;
 	if (ptr != nullptr) {
 		if (ptr[1] != 0xFF) {
 			u8 index1 = ptr[1];
-			J3DAnmTexPattern* pattern = unk4->unk8[ptr[0]];
-			pattern->mFrame = unkC[index1].mCurrentFrame;
-			jModel->mModelData->setTexNoAnimator(pattern, unk4->unkC[ptr[0]]);
+			J3DAnmTexPattern* pattern = common->texPattern[ptr[0]];
+			pattern->mFrame = frameControls[index1].mCurrentFrame;
+			jModel->mModelData->setTexNoAnimator(pattern, common->texNoAnm[ptr[0]]);
 		}
 	}
 }
 
 void M3UModel::entryOut()
 {
-	if (unk1C != 0 && unk1C[0] != 0xFF) { 
-		J3DAnmTexPattern* anim = unk4->unk8[unk1C[0]];
+	if (texPatternInfo != nullptr && texPatternInfo[0] != 0xFF) { 
+		J3DAnmTexPattern* anim = common->texPattern[texPatternInfo[0]];
 		jModel->mModelData->removeTexNoAnimator(anim);
 	}
 }

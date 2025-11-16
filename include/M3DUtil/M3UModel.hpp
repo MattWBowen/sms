@@ -21,9 +21,9 @@ public:
 	virtual J3DMtxCalc* getMtxCalc(const M3UMtxCalcSetInfo&);
 
 public:
-	/* 0x4 */ void* unk4; // TODO: what is this?
-	/* 0x8 */ J3DAnmTexPattern** unk8;
-	/* 0xC */ J3DTexNoAnm** unkC;
+	/* 0x4 */ void* anmData; // TODO: what is this?
+	/* 0x8 */ J3DAnmTexPattern** texPattern;
+	/* 0xC */ J3DTexNoAnm** texNoAnm;
 	/* 0x10 */ void* unk10;
 	/* 0x14 */ void* unk14; 
 };
@@ -45,13 +45,13 @@ public:
 	void updateInMotion();
 
 public:
-	/* 0x4 */ M3UModelCommon* unk4;
+	/* 0x4 */ M3UModelCommon* common;
 	/* 0x8 */ J3DModel* jModel;
-	/* 0xC */ J3DFrameCtrl* unkC;
-	/* 0x10 */ u16 unk10;
-	/* 0x14 */ void* unk14; // TODO: what is this? 
+	/* 0xC */ J3DFrameCtrl* frameControls;
+	/* 0x10 */ u16 motionCount;
+	/* 0x14 */ void* unk14; // TODO: what is this? //todo: MotionInfo
 	/* 0x18 */ u32 unk18;
-	/* 0x1C */ u8* unk1C;
+	/* 0x1C */ u8* texPatternInfo;
 };
 
 #endif
